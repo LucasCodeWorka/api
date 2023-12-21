@@ -11,6 +11,12 @@
         "src":"/",
         "dest": "/serv.js"
       }
-    ]
+    ],
+{
+  "builds": [{ "src": "serv.js", "use": "@now/node" }],
+  "dependencies": ["pg"]
+}
+
+
   }
   
