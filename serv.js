@@ -1,25 +1,36 @@
 const express = require('express');
 const { Pool } = require('pg');
-
+const pool1 = require("./db");
+const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 3001
-
-// Configurações do banco de dados
+const port = process.env.PORT || 3001;
+ 
+ 
 const pool = new Pool({
   user: 'liebe_ro',
   host: 'dbexp.vcenter.com.br',
   database: 'liebe',
   password: '%eTS$33qPO8XZNMc',
-  port: 20168, // Porta padrão do PostgreSQL
+  port: 20168
 });
 
-// Rota para a consulta
-app.get('/vr_ger_empresa', async (req, res) => {
+
+ 
+app.use(cors());
+app.use(express.json());
+
+ 
+app.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM vr_ger_empresa');
-    res.json(result.rows);
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM vr_ger_empresa');
+    const data = result.rows;
+    client.release();
+    res.json(data);
   } catch (error) {
-    console.error('Erro na consulta:', error);
-    res.status(500).send('Erro interno do servidor');
+    console.error('Erro ao buscar dados:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
+ 
+ 
